@@ -1,5 +1,9 @@
 /* 共通 */
 
+.App {
+  margin: 70px 0;
+}
+
 .button {
   padding: 10px 20px;
   border: 1px solid #ccc;
