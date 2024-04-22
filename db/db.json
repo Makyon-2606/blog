@@ -1,36 +1,4 @@
 {
-  "todo": [
-    {
-      "id": "b523",
-      "content": "洗濯します",
-      "editing": false
-    },
-    {
-      "id": "9496",
-      "content": "掃除",
-      "editing": false
-    },
-    {
-      "id": "ceca",
-      "content": "散歩に行く",
-      "editing": false
-    },
-    {
-      "id": "f6f5",
-      "content": "部屋の整頓をする",
-      "editing": false
-    },
-    {
-      "id": "2114",
-      "content": "遊びに行った後に塾",
-      "editing": false
-    },
-    {
-      "id": "1ae9",
-      "content": "お風呂に入って寝る",
-      "editing": false
-    }
-  ],
   "user": [
     {
       "id": "5g4e",
@@ -190,8 +158,14 @@
       "posts": []
     },
     {
-      "id": "f61b",
-      "posts": []
+      "posts": [
+        {
+          "postDate": "2024-04-22T01:56:25.324Z",
+          "title": "タイトル",
+          "content": "投稿しました。"
+        }
+      ],
+      "id": "f61b"
     },
     {
       "id": "87e6",
