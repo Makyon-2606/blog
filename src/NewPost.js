@@ -127,6 +127,7 @@ const NewPost = () => {
 
   return (
     <>
+      <h1>新規投稿</h1>
       <form onSubmit={postSubmit} className=''>
         <div className='new-post-title-area'>
           <textarea

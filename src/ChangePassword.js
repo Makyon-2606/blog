@@ -82,6 +82,7 @@ const ChangePassword = () => {
 
   return (
     <>
+      <h1>パスワード変更</h1>
       <form onSubmit={submitPasswordChange} className='signup-form'>
         <ChangeInputPassword
           inputPassState={[inputPass, setInputPass]}
