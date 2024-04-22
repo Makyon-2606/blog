@@ -8,6 +8,7 @@ import './css/style.css';
 const Top = () => {
   return (
     <>
+      <h1>ブログサイト</h1>
       <Link to='/signup' className='button sign-up-button'>
         新規登録
       </Link>
