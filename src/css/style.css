@@ -136,7 +136,7 @@
 .new-post-title-textbox-true,
 .new-post-content-textbox-true {
   background-color: rgb(248, 160, 160); /* 背景色 */
-  /* border: 1px solid red; 枠線色 */
+  border: 1px solid red; /* 枠線色 */
 }
 
 .new-post-title-length,

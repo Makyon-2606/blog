@@ -16,12 +16,14 @@ const NewPost = () => {
     (state) => state.user.authUserBlog.posts
   );
   const [title, setTitle] = useState(''); // タイトルの入力値の状態管理
-  const [titleErrorFlag, setTitleErrorFlag] = useState(false); // タイトルのエラーフラグ
+  const [titleErrorFlag, setTitleErrorFlag] = useState(true); // タイトルのエラーフラグの状態管理
+  const [titleFirstFlag, setTitleFirstFlag] = useState(false); // タイトルの初期入力フラグの状態管理
 
   const [content, setContent] = useState(''); // 文章の入力値の状態管理
-  const [contentErrorFlag, setContentErrorFlag] = useState(false); // 文章のエラーフラグ
+  const [contentErrorFlag, setContentErrorFlag] = useState(true); // 文章のエラーフラグの状態管理
+  const [contentFirstFlag, setContentFirstFlag] = useState(false); // 文章の初期入力フラグの状態管理
 
-  const [disabledFlag, setDisabledFlag] = useState(true); // 投稿ボタンの活性フラグ
+  const [disabledFlag, setDisabledFlag] = useState(true); // 投稿ボタンの活性フラグの状態管理
 
   /**
    * バリデーションチェック関数を呼び出す処理
@@ -39,22 +41,55 @@ const NewPost = () => {
    *
    * @param {string} title 新規投稿のタイトル
    * @param {string} content 新規投稿の文章
-   * @param {boolean} setTitleErrorFlag タイトルのエラーフラグの更新関数
-   * @param {boolean} setContentErrorFlag 文章のエラーフラグの更新関数
-   * @param {boolean} setDisabledFlag 投稿ボタンの活性フラグの更新関数
-   * @titleTooLong titleが31文字以上であるかの真偽値
-   * @contentTooLong contentgが501文字以上であるかの真偽値
-   * @isDisabled タイトルか文章がエラーに該当しているかの真偽値
+   * @param {function} setTitleErrorFlag タイトルのエラーフラグの更新関数
+   * @param {function} setContentErrorFlag 文章のエラーフラグの更新関数
+   * @param {function} setDisabledFlag 投稿ボタンの活性フラグの更新関数
+   * @newTitleErrorFlag titleが0文字、または31文字以上であるかの真偽値
+   * @contentTooLong contentが0文字、または501文字以上であるかの真偽値
+   * @isDisabled titleかcontentがエラーに該当しているかの真偽値
    */
   const validateNewPost = () => {
-    const titleTooLong = title.length > 30;
-    setTitleErrorFlag(titleTooLong);
+    const newTitleErrorFlag = title.length === 0 || title.length > 30;
+    const newContentErrorFlag = content.length === 0 || content.length > 500;
+    const isDisabled = newTitleErrorFlag || newContentErrorFlag;
 
-    const contentTooLong = content.length > 500;
-    setContentErrorFlag(contentTooLong);
-
-    const isDisabled = titleTooLong || contentTooLong || !title || !content;
+    setTitleErrorFlag(newTitleErrorFlag);
+    setContentErrorFlag(newContentErrorFlag);
     setDisabledFlag(isDisabled);
+  };
+
+  /**
+   * タイトルのバリデーションチェック関数
+   *
+   * @param {string} newVal タイトルに新しく入力された値
+   * @param {boolean} titleFirstFlag タイトルの初期入力フラグ
+   * @param {function} setTitleErrorFlag タイトルのエラーフラグの更新関数
+   * @param {function} setTitleFirstFlag タイトルの初期入力の更新関数
+   */
+  const validateTitle = (newVal) => {
+    const newTitleErrorFlag = newVal.length === 0 || newVal.length > 30;
+    setTitleErrorFlag(newTitleErrorFlag);
+
+    if (!titleFirstFlag) {
+      setTitleFirstFlag(true);
+    }
+  };
+
+  /**
+   * 文章のバリデーションチェック関数
+   *
+   * @param {string} newVal 文章に新しく入力された値
+   * @param {boolean} contentFirstFlag 文章の初期入力フラグ
+   * @param {function} setContentErrorFlag 文章のエラーフラグの更新関数
+   * @param {function} setContentFirstFlag 文章の初期入力の更新関数
+   */
+  const validateContent = (newVal) => {
+    const newContentErrorFlag = newVal.length === 0 || newVal.length > 500;
+    setContentErrorFlag(newContentErrorFlag);
+
+    if (!contentFirstFlag) {
+      setContentFirstFlag(true);
+    }
   };
 
   /**
@@ -88,31 +123,6 @@ const NewPost = () => {
     } catch (e) {
       console.error('Error adding new post:', e);
     }
-
-    // try {
-    //   // まず、ユーザのブログの既存データを取得
-    //   const res = await axios.get(`${ENDPOINT_BLOG}?id=${userState.id}`);
-    //   const blogData = res.data[0];
-
-    //   console.log(authUserBlog); // posts全体のデータ（配列）
-    //   console.log(blogData); // 合致するidが含まれているpostsオブジェクト
-
-    //   // posts配列に新しいポストを追加
-    //   const updatedPosts = [...blogData.posts, newPost];
-
-    //   // オブジェクト全体を更新する
-    //   await axios.put(`${ENDPOINT_BLOG}/${userState.id}`, {
-    //     ...blogData,
-    //     posts: updatedPosts,
-    //   });
-
-    //   // const res = await axios.post(
-    //   //   `${ENDPOINT_BLOG}/keyId=${userState.id}/posts`,
-    //   //   newPost
-    //   // );
-    // } catch (e) {
-    //   console.error('Error adding new post:', e);
-    // }
   };
 
   return (
@@ -120,22 +130,36 @@ const NewPost = () => {
       <form onSubmit={postSubmit} className=''>
         <div className='new-post-title-area'>
           <textarea
-            className={`new-post-title-textbox new-post-title-textbox-${titleErrorFlag}`}
+            className={`new-post-title-textbox new-post-title-textbox-${
+              titleErrorFlag && titleFirstFlag
+            }`}
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              validateTitle(e.target.value);
+            }}
           />
           <p
-            className={`new-post-title-length new-post-title-length-${titleErrorFlag}`}
+            className={`new-post-title-length new-post-title-length-${
+              titleErrorFlag && titleFirstFlag
+            }`}
           >{`${title.length}文字 / 30文字`}</p>
         </div>
         <div className='new-post-content-area'>
           <textarea
-            className={`new-post-content-textbox new-post-content-textbox-${contentErrorFlag}`}
+            className={`new-post-content-textbox new-post-content-textbox-${
+              contentErrorFlag && contentFirstFlag
+            }`}
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e) => {
+              setContent(e.target.value);
+              validateContent(e.target.value);
+            }}
           />
           <p
-            className={`new-post-content-length new-post-content-length-${contentErrorFlag}`}
+            className={`new-post-content-length new-post-content-length-${
+              contentErrorFlag && contentFirstFlag
+            }`}
           >{`${content.length}文字 / 500文字`}</p>
         </div>
         <button
